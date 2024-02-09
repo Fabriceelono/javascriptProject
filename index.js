@@ -11,21 +11,21 @@ const CHOICES = {
 };
 const ALPHABET_REGEX = /^[a-zA-Z]+$/;
 const NUMBER_REGEX = /\d/;
-const COMPUTER_TAUNT_MESSAGES = [
+const ROUND_GAME_WIN_MESSAGES = [
   "Haha, I'm unbeatable!",
   "You can't defeat the mighty computer!",
   "Better luck next time, human!",
   "I'm the master of Rock, Paper, Scissors!",
   "You're no match for my computational skills!",
 ];
-const COMPUTER_SALTY_MESSAGES = [
+const ROUND_LOSE_MESSAGES = [
   "This must be rigged!",
   "Beginner's luck!",
   "You got lucky this time.",
   "I wasn't even trying.",
   "Looks like the devs used ChatGPT to make this game.",
 ];
-const COMPUTER_TIE_MESSAGES = [
+const ROUND_TIE_MESSAGES = [
   "Tying with me is an achievement in itself!",
   "Impressive, you managed to draw against the computer genius!",
   "A tie? I'll let you think it's a win for you.",
@@ -46,14 +46,14 @@ const CANCEL_MESSAGES = [
   "Are you sure about canceling?",
   "Canceled plans? No way!",
 ];
-const LOSS_MESSAGES = [
+const GAME_LOSS_MESSAGES = [
   "Error 404: Victory not found. Something went wrong in my algorithms!",
   "I am sure I would've won if this was written in Python!.",
   "Algorithm malfunction! Your win was an unforeseen anomaly.",
   "Insufficient processing power detected. Congratulations on overloading my circuits!",
   "Debugging in progress... Oh wait, you won! My bad.",
 ];
-const WIN_MESSAGES = [
+const GAME_WIN_MESSAGES = [
   "Nice attempt, but my code is unbeatable. Better luck next time!",
   "Human error detected. Victory for me, as expected!",
   "You tried, but I'm still the supreme AI. Don't bother challenging perfection!",
@@ -68,29 +68,35 @@ const GAME_TIE_MESSAGES = [
   "Tied, but I'm always learning. Consider it an intentional algorithm adjustment.",
 ];
 const EMOJIS = {
-  rock: "🪨",
-  paper: "🗞️",
-  scissors: "✂️",
-  tie: "🤝",
-  win: "🏆",
-  crown: "👑",
-  robot: "🤖",
-  winRound: "🦾",
-  loseRound: "🧮",
-  rounds: "⏲️",
-  microphone: "🎤",
+  ROCK: "🪨",
+  PAPER: "🗞️",
+  SCISSORS: "✂️",
+  TIE: "🤝",
+  WIN: "🏆",
+  CROWN: "👑",
+  ROBOT: "🤖",
+  WIN_ROUND: "🦾",
+  LOSE_ROUND: "🧮",
+  ROUNDS: "⏲️",
+  MIC: "🎤",
 };
 function getRandomNumber(max) {
   return Math.floor(Math.random() * (max + 1));
 }
-function formatResult(result, userData) {
+function formatResult(result) {
   const computerMessage = getRandomNumber(4);
   const { win, lose, verb } = result;
   return verb === "tie"
-    ? `${userData.userName}'s ${win}${EMOJIS[win]} and my ${lose}${EMOJIS[lose]} is a tie ${EMOJIS.tie}.\n${COMPUTER_TIE_MESSAGES[computerMessage]}`
+    ? `Your ${win}${EMOJIS[win.toUpperCase()]} and my ${lose}${
+        EMOJIS[lose.toUpperCase()]
+      } is a tie ${EMOJIS.TIE}.\n${ROUND_TIE_MESSAGES[computerMessage]}`
     : result.winner === "player"
-    ? `${userData.userName}'s ${win}${EMOJIS[win]} ${verb} my ${lose}${EMOJIS[lose]} ${EMOJIS.loseRound}.\n${COMPUTER_SALTY_MESSAGES[computerMessage]}`
-    : `My ${win}${EMOJIS[win]} ${verb} your ${lose}${EMOJIS[lose]} ${EMOJIS.winRound}.\n${COMPUTER_TAUNT_MESSAGES[computerMessage]}`;
+    ? `Your ${win}${EMOJIS[win.toUpperCase()]} ${verb} my ${lose}${
+        EMOJIS[lose.toUpperCase()]
+      } ${EMOJIS.LOSE_ROUND}.\n${ROUND_LOSE_MESSAGES[computerMessage]}`
+    : `My ${win}${EMOJIS[win.toUpperCase()]} ${verb} your ${lose}${
+        EMOJIS[lose.toUpperCase()]
+      } ${EMOJIS.WIN_ROUND}.\n${ROUND_GAME_WIN_MESSAGES[computerMessage]}`;
 }
 
 function playRound(playerSelection, computerSelection) {
@@ -122,12 +128,10 @@ function playRound(playerSelection, computerSelection) {
   return gameResult;
 }
 function getUserName() {
-  const userName = prompt(
-    `Would you like to give me your name?${EMOJIS.microphone}`
-  );
+  const userName = prompt(`Would you like to give me your name?${EMOJIS.MIC}`);
   return userName;
 }
-function getComputerChoice() {
+function computerPlay() {
   const computerChoice = getRandomNumber(2);
   return Object.keys(CHOICES)[computerChoice];
 }
@@ -135,9 +139,9 @@ function getComputerChoice() {
 function getPlayerSelection(userData) {
   let userPrompt;
   if (!userData.semicolon) {
-    userPrompt = `Choose one: "Rock"${EMOJIS.rock}, "Paper"${EMOJIS.paper} or "Scissors"${EMOJIS.scissors}`;
+    userPrompt = `Choose one: "Rock"${EMOJIS.ROCK}, "Paper"${EMOJIS.PAPER} or "Scissors"${EMOJIS.SCISSORS}`;
   } else {
-    userPrompt = `Choose one: Rock${EMOJIS.rock}, Paper${EMOJIS.paper} or Scissors${EMOJIS.scissors}`;
+    userPrompt = `Choose one: Rock${EMOJIS.ROCK}, Paper${EMOJIS.PAPER} or Scissors${EMOJIS.SCISSORS}`;
   }
   let playerSelection = prompt(userPrompt);
   while (
@@ -162,15 +166,22 @@ function getPlayerSelection(userData) {
       userPrompt = `${NO_INPUT_MESSAGES[getRandomNumber(4)]}\n`;
     }
     if (userData.semicolon) {
-      userPrompt += `Choose one: Rock${EMOJIS.rock}, Paper${EMOJIS.paper} or Scissors${EMOJIS.scissors}`;
+      userPrompt += `Choose one: Rock${EMOJIS.ROCK}, Paper${EMOJIS.PAPER} or Scissors${EMOJIS.SCISSORS}`;
     } else {
-      userPrompt += `Choose one: "Rock"${EMOJIS.rock}, "Paper🗞️"${EMOJIS.paper} or "Scissors"${EMOJIS.scissors}`;
+      userPrompt += `Choose one: "Rock"${EMOJIS.ROCK}, "Paper"${EMOJIS.PAPER} or "Scissors"${EMOJIS.SCISSORS}`;
     }
     playerSelection = prompt(userPrompt);
   }
   return playerSelection.toLowerCase().trim();
 }
 
+function formatStats(username, wins, loss, tie) {
+  return `\n${username}: ${wins} win${wins > 1 ? "s" : ""}, ${loss} loss${
+    loss > 1 ? "es" : ""
+  } and ${tie} tie${tie > 1 ? "s" : ""} which adds to a total of ${
+    wins - loss
+  } point${wins - loss > 1 ? "s" : ""}.`;
+}
 function game() {
   let userName = getUserName();
   let welcomeAlert = "";
@@ -181,11 +192,11 @@ function game() {
   userName = userName.trim();
   if (NUMBER_REGEX.test(userName)) {
     welcomeAlert +=
-      "I have a friend called R2D2. Do you know him?. Nevermind, lets move on.\n";
+      "I have a friend called R2D2. Do you know him?. Lets move on.\n";
   } else if (!ALPHABET_REGEX.test(userName)) {
     welcomeAlert += "That is a weird name\n";
   }
-  welcomeAlert += `Hello, ${userName}.\nMy name is skyne-. I mean Robo${EMOJIS.robot}.\nWelcome to Rock${EMOJIS.rock}, Paper${EMOJIS.paper}, Scissors${EMOJIS.scissors}.\nWe will be playing 5 rounds${EMOJIS.rounds}.\n`;
+  welcomeAlert += `Hello, ${userName}.\nMy name is skyne-. I mean Robo${EMOJIS.ROBOT}.\nWelcome to Rock${EMOJIS.ROCK}, Paper${EMOJIS.PAPER}, Scissors${EMOJIS.SCISSORS}.\nWe will be playing 5 rounds${EMOJIS.ROUNDS}.\n`;
   const userData = {
     userName,
     semicolon: false,
@@ -198,7 +209,7 @@ function game() {
 
   for (let i = 0; i < 5; i++) {
     const playerSelection = getPlayerSelection(userData);
-    const computerSelection = getComputerChoice();
+    const computerSelection = computerPlay();
     const gameResult = playRound(playerSelection, computerSelection);
     if (gameResult.winner) {
       gameResult.winner === "player"
@@ -207,37 +218,38 @@ function game() {
     } else {
       userData.tieCount++;
     }
-    alert(formatResult(gameResult, userData));
+    const formattedResult = formatResult(gameResult);
+    console.log(formattedResult);
+    alert(formattedResult);
   }
-  let finalResults = `The final results are:\n${userData.userName}: ${
-    userData.userWins
-  } win${userData.userWins > 1 ? "s" : ""}, ${userData.userLoss} loss${
-    userData.userLoss > 1 ? "es" : ""
-  } and ${userData.tieCount} tie${
-    userData.tieCount > 1 ? "s" : ""
-  } which adds to a total of ${userData.userWins - userData.userLoss} point${
-    userData.userWins - userData.userLoss > 1 ? "s" : ""
-  }.\nRobo${EMOJIS.robot}: ${userData.userLoss} win${
-    userData.userLoss > 1 ? "s" : ""
-  }, ${userData.userWins} loss${userData.userWins > 1 ? "es" : ""} and ${
+  const finalPlayerStats = formatStats(
+    userData.userName,
+    userData.userWins,
+    userData.userLoss,
     userData.tieCount
-  } tie${userData.tieCount > 1 ? "s" : ""} which adds to a total of ${
-    userData.userLoss - userData.userWins
-  } point${userData.userLoss - userData.userWins > 1 ? "s" : ""}.`;
+  );
+  const finalComputerStats = formatStats(
+    "Robo" + EMOJIS.ROBOT,
+    userData.userLoss,
+    userData.userWins,
+    userData.tieCount
+  );
+  let finalResults = `The final results are:${finalPlayerStats} ${finalComputerStats}`;
 
   if (userData.userWins - userData.userLoss > 0) {
-    finalResults += `\n${userData.userName} won the game!${EMOJIS.win}.\n${
-      LOSS_MESSAGES[getRandomNumber(4)]
+    finalResults += `\n${userData.userName} won the game!${EMOJIS.WIN}.\n${
+      GAME_LOSS_MESSAGES[getRandomNumber(4)]
     }`;
   } else if (userData.userWins - userData.userLoss < 0) {
-    finalResults += `\nRobo${EMOJIS.robot} won the game!${EMOJIS.crown}.\n${
-      WIN_MESSAGES[getRandomNumber(4)]
+    finalResults += `\nRobo${EMOJIS.ROBOT} won the game!${EMOJIS.CROWN}.\n${
+      GAME_WIN_MESSAGES[getRandomNumber(4)]
     }`;
   } else {
     finalResults += `\nIt's a tie between ${userData.userName} and Robo${
-      EMOJIS.robot
+      EMOJIS.ROBOT
     }.\n${GAME_TIE_MESSAGES[getRandomNumber(4)]}`;
   }
+  console.log(finalResults);
   alert(finalResults);
 }
 
