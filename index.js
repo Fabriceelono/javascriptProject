@@ -186,8 +186,8 @@ function game() {
   let userName = getUserName();
   let welcomeAlert = "";
   if (!userName) {
-    welcomeAlert += "I am just gonna call you Chris then.\n";
-    userName = "Chris";
+    welcomeAlert += "I am gonna call you Player then.\n";
+    userName = "Player";
   }
   userName = userName.trim();
   if (NUMBER_REGEX.test(userName)) {
@@ -253,4 +253,17 @@ function game() {
   alert(finalResults);
 }
 
-game();
+let gameLoadedOnce = false
+
+window.addEventListener("visibilitychange", () => {
+if(!document.hidden && !gameLoadedOnce) {
+  game();
+  gameLoadedOnce = true
+}
+})
+window.addEventListener("DOMContentLoaded",()=>{
+  if (!document.hidden && !gameLoadedOnce) {
+    game();
+    gameLoadedOnce = true
+  }
+})
