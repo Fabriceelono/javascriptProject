@@ -253,11 +253,11 @@ function game() {
   alert(finalResults);
 }
 
-// document.addEventListener("visibilitychange", () => {
-//   if (!document.hidden){
-//     game();
-//   }
-// });
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden){
+    game();
+  }
+});
 
 document.addEventListener("DOMContentLoaded", ()=>{
   if (!document.hidden){
