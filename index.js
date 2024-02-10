@@ -128,6 +128,7 @@ function playRound(playerSelection, computerSelection) {
   return gameResult;
 }
 function getUserName() {
+  window.focus()
   const userName = prompt(`Would you like to give me your name?${EMOJIS.MIC}`);
   return userName;
 }
@@ -183,7 +184,6 @@ function formatStats(username, wins, loss, tie) {
   } point${wins - loss > 1 ? "s" : ""}.`;
 }
 function game() {
-  window.focus()
   let userName = getUserName();
   let welcomeAlert = "";
   if (!userName) {
