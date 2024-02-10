@@ -259,7 +259,7 @@ function game() {
 //   }
 // });
 
-window.onload(()=>{
+document.addEventListener("DOMContentLoaded", ()=>{
   if (!document.hidden){
     game();
   }
