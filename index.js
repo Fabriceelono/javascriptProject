@@ -253,4 +253,8 @@ function game() {
   alert(finalResults);
 }
 
-document.addEventListener("DOMContentLoaded", () => game());
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden){
+    game();
+  }
+});
