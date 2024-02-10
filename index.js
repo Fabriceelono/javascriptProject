@@ -253,8 +253,14 @@ function game() {
   alert(finalResults);
 }
 
-document.addEventListener("visibilitychange", () => {
+// document.addEventListener("visibilitychange", () => {
+//   if (!document.hidden){
+//     game();
+//   }
+// });
+
+window.onload(()=>{
   if (!document.hidden){
     game();
   }
-});
+})
