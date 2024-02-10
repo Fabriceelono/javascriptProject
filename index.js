@@ -185,7 +185,7 @@ function formatStats(username, wins, loss, tie) {
 function game() {
   let userName = getUserName();
   let welcomeAlert = "";
-  if (!userName || userName.trim().toLowerCase() === "no") {
+  if (!userName || userName.trim().toLowerCase() === "no" || userName.trim() === "") {
     welcomeAlert += "I am gonna call you Player then.\n";
     userName = "Player";
   }
