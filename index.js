@@ -93,16 +93,18 @@ function getRandomNumber(max) {
 function formatResult(result) {
   const computerMessage = getRandomNumber(4);
   const { win, lose, verb } = result;
+  const winUpperCase = win.toUpperCase();
+  const loseUpperCase = lose.toUpperCase();
   return verb === "tie"
-    ? `Your ${win}${EMOJIS[win.toUpperCase()]} and my ${lose}${
-        EMOJIS[lose.toUpperCase()]
+    ? `Your ${win}${EMOJIS[winUpperCase]} and my ${lose}${
+        EMOJIS[loseUpperCase]
       } is a tie ${EMOJIS.TIE}.\n${ROUND_TIE_MESSAGES[computerMessage]}`
     : result.winner === "player"
-    ? `Your ${win}${EMOJIS[win.toUpperCase()]} ${verb} my ${lose}${
-        EMOJIS[lose.toUpperCase()]
+    ? `Your ${win}${EMOJIS[winUpperCase]} ${verb} my ${lose}${
+        EMOJIS[loseUpperCase]
       } ${EMOJIS.LOSE_ROUND}.\n${ROUND_LOSE_MESSAGES[computerMessage]}`
-    : `My ${win}${EMOJIS[win.toUpperCase()]} ${verb} your ${lose}${
-        EMOJIS[lose.toUpperCase()]
+    : `My ${win}${EMOJIS[winUpperCase]} ${verb} your ${lose}${
+        EMOJIS[loseUpperCase]
       } ${EMOJIS.WIN_ROUND}.\n${ROUND_GAME_WIN_MESSAGES[computerMessage]}`;
 }
 
@@ -143,16 +145,13 @@ function computerPlay() {
   return Object.keys(CHOICES)[computerChoice];
 }
 
+
+function getUserPromptMessage(roundPlayed){
+  return `Choose one: "Rock"${EMOJIS.ROCK}, "Paper"${EMOJIS.PAPER} or "Scissors"${EMOJIS.SCISSORS}.\nType "Quit" to exit ${roundPlayed ? 'and view the results.' : 'the game.'}`
+}
 function getPlayerSelection(userData) {
   let userPrompt;
-  userPrompt = `Choose one: "Rock"${EMOJIS.ROCK}, "Paper"${EMOJIS.PAPER} or "Scissors"${EMOJIS.SCISSORS}.`;
-
-  if (userData.roundPlayed){
-    userPrompt+= '\nType "Quit" to exit and view the results.'
-  }else{
-    userPrompt+= '\nType "Quit" to exit the game.'
-  }
-
+  userPrompt = getUserPromptMessage(userData.roundPlayed);
   let playerSelection = prompt(userPrompt);
   while (
     !playerSelection ||
@@ -167,12 +166,7 @@ function getPlayerSelection(userData) {
     } else if (playerSelection.trim() === "") {
       userPrompt = `${NO_INPUT_MESSAGES[getRandomNumber(4)]}\n`;
     }
-    userPrompt += `Choose one: "Rock"${EMOJIS.ROCK}, "Paper"${EMOJIS.PAPER} or "Scissors"${EMOJIS.SCISSORS}.`;
-    if (userData.roundPlayed){
-      userPrompt+= '\nType "Quit" to exit and view the results.'
-    }else{
-      userPrompt+= '\nType "Quit" to exit the game.'
-    }
+    userPrompt += getUserPromptMessage(userData.roundPlayed);
     playerSelection = prompt(userPrompt);
   }
   return playerSelection.toLowerCase().trim();
