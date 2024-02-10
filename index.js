@@ -183,11 +183,12 @@ function formatStats(username, wins, loss, tie) {
   } point${wins - loss > 1 ? "s" : ""}.`;
 }
 function game() {
+  window.focus()
   let userName = getUserName();
   let welcomeAlert = "";
   if (!userName) {
-    welcomeAlert += "I am just gonna call you Chris then.\n";
-    userName = "Chris";
+    welcomeAlert += "I am gonna call you Player then.\n";
+    userName = "Player";
   }
   userName = userName.trim();
   if (NUMBER_REGEX.test(userName)) {
