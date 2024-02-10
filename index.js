@@ -253,4 +253,17 @@ function game() {
   alert(finalResults);
 }
 
-game();
+let gameLoadedOnce = false
+
+window.addEventListener("visibilitychange", () => {
+if(!document.hidden && !gameLoadedOnce) {
+  game();
+  gameLoadedOnce = true
+}
+})
+window.addEventListener("DOMContentLoaded",()=>{
+  if (!document.hidden && !gameLoadedOnce) {
+    game();
+    gameLoadedOnce = true
+  }
+})
