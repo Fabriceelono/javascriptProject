@@ -46,6 +46,13 @@ const CANCEL_MESSAGES = [
   "Are you sure about canceling?",
   "Canceled plans? No way!",
 ];
+const INVALID_INPUT_MESSAGES=[
+  "Invalid input. Please provide a valid response.",
+  "Invalid entry. Choose a valid option.",
+  "Oops! That's not recognized. Try again with a valid input.",
+  "Hmm, that input seems invalid. Please choose a valid option.",
+  "Invalid response. Please enter a valid input."
+]
 const GAME_LOSS_MESSAGES = [
   "Error 404: Victory not found. Something went wrong in my algorithms!",
   "I am sure I would've won if this was written in Python!.",
@@ -138,37 +145,33 @@ function computerPlay() {
 
 function getPlayerSelection(userData) {
   let userPrompt;
-  if (!userData.semicolon) {
-    userPrompt = `Choose one: "Rock"${EMOJIS.ROCK}, "Paper"${EMOJIS.PAPER} or "Scissors"${EMOJIS.SCISSORS}`;
-  } else {
-    userPrompt = `Choose one: Rock${EMOJIS.ROCK}, Paper${EMOJIS.PAPER} or Scissors${EMOJIS.SCISSORS}`;
+  userPrompt = `Choose one: "Rock"${EMOJIS.ROCK}, "Paper"${EMOJIS.PAPER} or "Scissors"${EMOJIS.SCISSORS}.`;
+
+  if (userData.roundPlayed){
+    userPrompt+= '\nType "Quit" to exit and view the results.'
+  }else{
+    userPrompt+= '\nType "Quit" to exit the game.'
   }
+
   let playerSelection = prompt(userPrompt);
   while (
     !playerSelection ||
-    !Object.keys(CHOICES).includes(playerSelection.toLowerCase().trim())
+    !Object.keys(CHOICES).includes(playerSelection.toLowerCase().trim()) ||
+    !playerSelection.toLowerCase().trim() === "quit"
   ) {
     if (playerSelection) {
-      if (
-        !userData.semicolon &&
-        (playerSelection.toLowerCase().trim() === '"rock"' ||
-          playerSelection.toLowerCase().trim() === '"paper"' ||
-          playerSelection.toLowerCase().trim() === '"scissors"')
-      ) {
-        userData.semicolon = true;
-        userPrompt = "Ok, That was my bad.\n";
-      } else {
-        userPrompt = "Invalid input. Try again.\n";
-      }
+      if (playerSelection.toLowerCase().trim() === "quit") return "quit"
+      userPrompt = `${INVALID_INPUT_MESSAGES[getRandomNumber(4)]}\n`;
     } else if (playerSelection === null) {
       userPrompt = `${CANCEL_MESSAGES[getRandomNumber(4)]}\n`;
     } else if (playerSelection.trim() === "") {
       userPrompt = `${NO_INPUT_MESSAGES[getRandomNumber(4)]}\n`;
     }
-    if (userData.semicolon) {
-      userPrompt += `Choose one: Rock${EMOJIS.ROCK}, Paper${EMOJIS.PAPER} or Scissors${EMOJIS.SCISSORS}`;
-    } else {
-      userPrompt += `Choose one: "Rock"${EMOJIS.ROCK}, "Paper"${EMOJIS.PAPER} or "Scissors"${EMOJIS.SCISSORS}`;
+    userPrompt += `Choose one: "Rock"${EMOJIS.ROCK}, "Paper"${EMOJIS.PAPER} or "Scissors"${EMOJIS.SCISSORS}.`;
+    if (userData.roundPlayed){
+      userPrompt+= '\nType "Quit" to exit and view the results.'
+    }else{
+      userPrompt+= '\nType "Quit" to exit the game.'
     }
     playerSelection = prompt(userPrompt);
   }
@@ -199,16 +202,21 @@ function game() {
   welcomeAlert += `Hello, ${userName}.\nMy name is skyne-. I mean Robo${EMOJIS.ROBOT}.\nWelcome to Rock${EMOJIS.ROCK}, Paper${EMOJIS.PAPER}, Scissors${EMOJIS.SCISSORS}.\nWe will be playing 5 rounds${EMOJIS.ROUNDS}.\n`;
   const userData = {
     userName,
-    semicolon: false,
     intInputMessage: false,
     tieCount: 0,
     userWins: 0,
     userLoss: 0,
+    roundPlayed: false
   };
   alert(welcomeAlert);
 
   for (let i = 0; i < 5; i++) {
     const playerSelection = getPlayerSelection(userData);
+    if (playerSelection==="quit"){
+      break;
+    }else{
+      userData.roundPlayed = true;
+    }
     const computerSelection = computerPlay();
     const gameResult = playRound(playerSelection, computerSelection);
     if (gameResult.winner) {
@@ -222,6 +230,7 @@ function game() {
     console.log(formattedResult);
     alert(formattedResult);
   }
+  if (!userData.roundPlayed) return
   const finalPlayerStats = formatStats(
     userData.userName,
     userData.userWins,
